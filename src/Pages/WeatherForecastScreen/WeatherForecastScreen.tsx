@@ -29,9 +29,12 @@ const WeatherForecastScreen = () => {
         return str.charAt(0).toUpperCase() + str.slice(1);
     };
 
+
     const getWeatherForecast = async () => {
+        const cityName = city || "Tokyo"; // Usa "Tokyo" se city for undefined
+
         const resWeatherCurrent = await fetch(
-            `https://api.weatherapi.com/v1/forecast.json?key=c880fb6ae881432282813433250802&q=${city || "Tokyo"}`
+            `https://api.weatherapi.com/v1/forecast.json?key=c880fb6ae881432282813433250802&q=${cityName}`
         );
         const dataWeatherCurrent = await resWeatherCurrent.json();
         setWeatherCurrent(dataWeatherCurrent);
@@ -86,7 +89,7 @@ const WeatherForecastScreen = () => {
                 <Header></Header>
                 <div className="bg-backgroundContainer h-screen flex flex-col justify-between pl-12 pr-12 relative phone:justify-normal font-display">
                     <div className="md:flex md:flex-row md:items-start md:justify-between phone:flex phone:items-center phone:justify-center mb-96: ">
-                        <h1 className="text-[333px] leading-54 text-white leading-none phone:hidden md:flex">{weatherTemperature(weatherWeek.current.temp_c)}</h1>
+                        <h1 className="text-[333px] leading-54 text-white leading-none phone:hidden md:flex">{weatherTemperature(weatherCurrent.current.temp_c)}</h1>
                         <h1 className="border-3 p-4 font-bold rounded-3xl text-2xl mr-16 mt-16 text-white phone:flex phone:items-center phone:justify-center phone:mr-0">{capitalizeFirstLetter(city)}</h1>
                     </div>
                     <div className="md:flex md:flex-row md:items-center md:justify-between md:mb-0 phone:flex phone:flex-col-reverse phone:mb-96 phone:leading-none phone:h-[660px] md:h-full md:mt-32">
