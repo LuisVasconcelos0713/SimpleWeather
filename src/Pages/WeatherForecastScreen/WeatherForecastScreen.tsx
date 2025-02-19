@@ -22,13 +22,13 @@ interface WeatherWeek {
 
 const WeatherForecastScreen = () => {
     const { city } = useParams();
-    const [weatherCurrent, setWeatherCurrent] = useState<WeatherCurrent>({current: {temp_c: 0, is_day: 0}});
+    const [weatherCurrent, setWeatherCurrent] = useState<WeatherCurrent | null>(null);
     const [weatherWeek, setWeatherWeek] = useState<WeatherWeek | null>(null);
 
-    const capitalizeFirstLetter = (str:string) => {
+    const capitalizeFirstLetter = (str: string | undefined): string => {
+        if (!str) return "Unknown";
         return str.charAt(0).toUpperCase() + str.slice(1);
     };
-
 
     const getWeatherForecast = async () => {
         const cityName = city || "Tokyo"; // Usa "Tokyo" se city for undefined
@@ -40,7 +40,7 @@ const WeatherForecastScreen = () => {
         setWeatherCurrent(dataWeatherCurrent);
 
         const resWeatherWeek = await fetch(
-            `https://api.weatherapi.com/v1/forecast.json?key=c880fb6ae881432282813433250802&q=${city}&days=8`
+            `https://api.weatherapi.com/v1/forecast.json?key=c880fb6ae881432282813433250802&q=${cityName}&days=8`
         );
         const dataWeatherWeek = await resWeatherWeek.json();
         setWeatherWeek(dataWeatherWeek);
@@ -53,7 +53,6 @@ const WeatherForecastScreen = () => {
         getWeatherForecast();
     }, [city]);
 
-    // Atualizando o dicionário de ícones com as chaves para comparação sem diferenciação de maiúsculas/minúsculas
     const weatherIcons = {
         "sunny": <IoSunnyOutline size={93} className="text-white" />,
         "partly cloudy": <IoPartlySunnyOutline size={93} className="text-white" />,
@@ -69,22 +68,20 @@ const WeatherForecastScreen = () => {
         "snow": <FaRegSnowflake size={93} className="text-white"/>,
     };
 
-    const weatherTemperature = (temperature:number):string => {
+    const weatherTemperature = (temperature: number): string => {
         if (temperature < 12) {
-            return "Freezing."
-        }else{
-            return "It's Hot."
+            return "Freezing.";
+        } else {
+            return "It's Hot.";
         }
-    }
+    };
 
-    const truncNumber = (unTruncNumber:number):number => {
-        return Math.trunc(unTruncNumber)
-    }
+    const truncNumber = (unTruncNumber: number): number => {
+        return Math.trunc(unTruncNumber);
+    };
 
     return (
-
-        weatherWeek ? (
-
+        weatherWeek && weatherCurrent ? (
             <div className="overflow-hidden">
                 <Header></Header>
                 <div className="bg-backgroundContainer h-screen flex flex-col justify-between pl-12 pr-12 relative phone:justify-normal font-display">
@@ -94,27 +91,22 @@ const WeatherForecastScreen = () => {
                     </div>
                     <div className="md:flex md:flex-row md:items-center md:justify-between md:mb-0 phone:flex phone:flex-col-reverse phone:mb-96 phone:leading-none phone:h-[660px] md:h-full md:mt-32">
                         <div className="flex flex-row gap-5 md:overflow-x-hidden phone:overflow-x-scroll phone:overflow-y-hidden min-h-[300px]">
-                            {weatherWeek?.forecast ? (
-                                weatherWeek.forecast.forecastday.slice(1).map((day) => {
-                                    const condition:string = day.day.condition.text.toLowerCase(); // Normaliza o texto para minúsculas
-                                    const iconToShow = weatherIcons[condition as keyof typeof weatherIcons] || <CiCloudOn size={93} className="text-white" />;
+                            {weatherWeek.forecast.forecastday.slice(1).map((day) => {
+                                const condition: string = day.day.condition.text.toLowerCase(); // Normaliza o texto para minúsculas
+                                const iconToShow = weatherIcons[condition as keyof typeof weatherIcons] || <CiCloudOn size={93} className="text-white" />;
 
-                                    return (
-                                        <div key={day.date}
-                                             className="flex flex-col items-center justify-between border-3 rounded-full md:h-[293px] phone:h-[260px] phone:max-w-26 phone:min-w-32 md:max-w-33 md:min-w-38 index-2 text-white ">
-                                            <div className="mt-5">{iconToShow}</div>
-                                            <div className="flex flex-col text-sm text-gray-400">
-                                                <span className="">{day.day.maxtemp_c} °C</span>
-                                                <span className="">{day.day.mintemp_c} °C</span>
-                                            </div>
-                                            <h2 className="mb-12 font-bold text-3xl">{new Date(day.date).toLocaleDateString("en-US", {weekday: "short"})}</h2>
+                                return (
+                                    <div key={day.date}
+                                         className="flex flex-col items-center justify-between border-3 rounded-full md:h-[293px] phone:h-[260px] phone:max-w-26 phone:min-w-32 md:max-w-33 md:min-w-38 index-2 text-white ">
+                                        <div className="mt-5">{iconToShow}</div>
+                                        <div className="flex flex-col text-sm text-gray-400">
+                                            <span className="">{day.day.maxtemp_c} °C</span>
+                                            <span className="">{day.day.mintemp_c} °C</span>
                                         </div>
-                                    );
-                                })
-                            ) : (
-                                <h1>Carregando...</h1>
-                            )}
-
+                                        <h2 className="mb-12 font-bold text-3xl">{new Date(day.date).toLocaleDateString("en-US", {weekday: "short"})}</h2>
+                                    </div>
+                                );
+                            })}
                         </div>
                         <div className="flex flex-row items-center md:justify-between text-white phone:justify-center phone:leading-none font-teste">
                             <h1 className="md:text-[300px] phone:text-[260px] phone:leading-none">{weatherCurrent.current ? `${truncNumber(weatherCurrent.current.temp_c)}` : "Carregando..."}</h1>
