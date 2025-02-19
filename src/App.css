@@ -1,0 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap');
+
+@import "tailwindcss";
+body{
+    background: rgb(19 19 26);
+    overflow: hidden;
+}
+
+@theme{
+    --color-backgroundContainer: rgb(19 19 26);
+    --color-backgroundForecast: rgb(206 213 221);
+    --breakpoint-phone: 360px;
+    --font-display: "Nunito", sans-serif;
+    --font-teste: "Nunito", sans-serif;
+}
