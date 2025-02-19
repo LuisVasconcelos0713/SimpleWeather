@@ -12,7 +12,7 @@ const WeatherForecastScreen = () => {
     const [weatherCurrent, setWeatherCurrent] = useState({});
     const [weatherWeek, setWeatherWeek] = useState(null);
 
-    const capitalizeFirstLetter = (str) => {
+    const capitalizeFirstLetter = (str:string) => {
         return str.charAt(0).toUpperCase() + str.slice(1);
     };
 
