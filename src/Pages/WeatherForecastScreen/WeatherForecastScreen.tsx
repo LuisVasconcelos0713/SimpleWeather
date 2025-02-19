@@ -7,10 +7,23 @@ import { FaRegSnowflake } from "react-icons/fa";
 import Header from "../../Components/Header/Header.tsx";
 import Loading from "../../Components/Loading/Loading.tsx";
 
+interface WeatherCurrent {
+    current: {
+        temp_c: number;
+        is_day: number;
+    };
+}
+
+interface WeatherWeek {
+    forecast: {
+        forecastday: { date: string; day: { condition: { text: string }; maxtemp_c: number; mintemp_c: number } }[];
+    };
+}
+
 const WeatherForecastScreen = () => {
     const { city } = useParams();
-    const [weatherCurrent, setWeatherCurrent] = useState({});
-    const [weatherWeek, setWeatherWeek] = useState(null);
+    const [weatherCurrent, setWeatherCurrent] = useState<WeatherCurrent>({current: {temp_c: 0, is_day: 0}});
+    const [weatherWeek, setWeatherWeek] = useState<WeatherWeek | null>(null);
 
     const capitalizeFirstLetter = (str:string) => {
         return str.charAt(0).toUpperCase() + str.slice(1);
@@ -18,7 +31,7 @@ const WeatherForecastScreen = () => {
 
     const getWeatherForecast = async () => {
         const resWeatherCurrent = await fetch(
-            `https://api.weatherapi.com/v1/forecast.json?key=c880fb6ae881432282813433250802&q=${city}`
+            `https://api.weatherapi.com/v1/forecast.json?key=c880fb6ae881432282813433250802&q=${city || "Tokyo"}`
         );
         const dataWeatherCurrent = await resWeatherCurrent.json();
         setWeatherCurrent(dataWeatherCurrent);
@@ -81,7 +94,7 @@ const WeatherForecastScreen = () => {
                             {weatherWeek?.forecast ? (
                                 weatherWeek.forecast.forecastday.slice(1).map((day) => {
                                     const condition:string = day.day.condition.text.toLowerCase(); // Normaliza o texto para minúsculas
-                                    const iconToShow = weatherIcons[condition] || <CiCloudOn size={93} className="text-white" />; // Verifica a correspondência
+                                    const iconToShow = weatherIcons[condition as keyof typeof weatherIcons] || <CiCloudOn size={93} className="text-white" />;
 
                                     return (
                                         <div key={day.date}

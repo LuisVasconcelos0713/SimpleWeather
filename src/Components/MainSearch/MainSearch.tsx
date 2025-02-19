@@ -2,7 +2,7 @@ import "../../App.css"
 import {FaSearch} from "react-icons/fa";
 
 interface MainSearchProps {
-    onSubmit: (event: React.FormEvent) => void;
+    onSubmit: (event:  React.FormEvent<HTMLFormElement>) => void;
     city: string;
     setCity: React.Dispatch<React.SetStateAction<string>>;
 }
@@ -20,7 +20,7 @@ const MainSearch: React.FC<MainSearchProps> = ({onSubmit,city,setCity}) => {
                         type="text"
                         placeholder="Type a Location"
                         value={city}
-                        onChange={(e:React.FormEvent) => setCity(e.target.value)}
+                        onChange={(e:React.ChangeEvent<HTMLInputElement>) => setCity(e.target.value)}
                         className="md:w-[543px] p-3 b-4 border-4 border-white rounded-lg text-white"/>
                     <button type="submit" className="p-4 border-4 border-white rounded-lg text-white hover:border-blue-500 hover:text-blue-500"><FaSearch /></button>
                 </form>

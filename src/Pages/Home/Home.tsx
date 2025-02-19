@@ -8,7 +8,7 @@ const Home = () => {
     const [city, setCity] = useState<string>("");
     const navigate = useNavigate();
 
-    const onSubmit = (e: React.FormEvent): void => {
+    const onSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
         if (!city.trim()) return; // Evita submissão se o campo estiver vazio ou com espaços
         console.log("teste", city);
